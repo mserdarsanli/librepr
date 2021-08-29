@@ -1,0 +1,8 @@
+2021-08-29 v0.2
+
+- Ability to print structs
+- Improvements to dwarf parsing
+
+2021-08-08 v0.1
+
+- Initial release with enum class support

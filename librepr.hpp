@@ -19,6 +19,7 @@
 #include <stddef.h>
 
 #include <algorithm>
+#include <iomanip>
 #include <iostream>
 #include <mutex>
 #include <vector>
@@ -32,11 +33,11 @@
 #include <optional>
 
 
-namespace librepr::_internal_v1 {
+namespace librepr::_internal_v2 {
 
 
-
-enum class DwarfTag : uint16_t {
+enum class DwarfTag : uint16_t
+{
     None = 0,
     ArrayType = 1,
     ClassType = 2,
@@ -102,7 +103,80 @@ enum class DwarfTag : uint16_t {
     HiUser = 65535,
 };
 
-enum class DwarfAttr : uint16_t {
+inline
+std::ostream& operator<<(std::ostream &out, DwarfTag v)
+{
+    switch (v)
+    {
+    case DwarfTag::None: out << "None"; return out;
+    case DwarfTag::ArrayType: out << "ArrayType"; return out;
+    case DwarfTag::ClassType: out << "ClassType"; return out;
+    case DwarfTag::EntryPoint: out << "EntryPoint"; return out;
+    case DwarfTag::EnumerationType: out << "EnumerationType"; return out;
+    case DwarfTag::FormalParameter: out << "FormalParameter"; return out;
+    case DwarfTag::ImportedDeclaration: out << "ImportedDeclaration"; return out;
+    case DwarfTag::Label: out << "Label"; return out;
+    case DwarfTag::LexicalBlock: out << "LexicalBlock"; return out;
+    case DwarfTag::Member: out << "Member"; return out;
+    case DwarfTag::PointerType: out << "PointerType"; return out;
+    case DwarfTag::ReferenceType: out << "ReferenceType"; return out;
+    case DwarfTag::CompileUnit: out << "CompileUnit"; return out;
+    case DwarfTag::StringType: out << "StringType"; return out;
+    case DwarfTag::StructureType: out << "StructureType"; return out;
+    case DwarfTag::SubroutineType: out << "SubroutineType"; return out;
+    case DwarfTag::Typedef: out << "Typedef"; return out;
+    case DwarfTag::UnionType: out << "UnionType"; return out;
+    case DwarfTag::UnspecifiedParameters: out << "UnspecifiedParameters"; return out;
+    case DwarfTag::Variant: out << "Variant"; return out;
+    case DwarfTag::CommonBlock: out << "CommonBlock"; return out;
+    case DwarfTag::CommonInclusion: out << "CommonInclusion"; return out;
+    case DwarfTag::Inheritance: out << "Inheritance"; return out;
+    case DwarfTag::InlinedSubroutine: out << "InlinedSubroutine"; return out;
+    case DwarfTag::Module: out << "Module"; return out;
+    case DwarfTag::PtrToMemberType: out << "PtrToMemberType"; return out;
+    case DwarfTag::SetType: out << "SetType"; return out;
+    case DwarfTag::SubrangeType: out << "SubrangeType"; return out;
+    case DwarfTag::WithStmt: out << "WithStmt"; return out;
+    case DwarfTag::AccessDeclaration: out << "AccessDeclaration"; return out;
+    case DwarfTag::BaseType: out << "BaseType"; return out;
+    case DwarfTag::CatchBlock: out << "CatchBlock"; return out;
+    case DwarfTag::ConstType: out << "ConstType"; return out;
+    case DwarfTag::Constant: out << "Constant"; return out;
+    case DwarfTag::Enumerator: out << "Enumerator"; return out;
+    case DwarfTag::FileType: out << "FileType"; return out;
+    case DwarfTag::Friend: out << "Friend"; return out;
+    case DwarfTag::Namelist: out << "Namelist"; return out;
+    case DwarfTag::NamelistItem: out << "NamelistItem"; return out;
+    case DwarfTag::PackedType: out << "PackedType"; return out;
+    case DwarfTag::Subprogram: out << "Subprogram"; return out;
+    case DwarfTag::TemplateTypeParameter: out << "TemplateTypeParameter"; return out;
+    case DwarfTag::TemplateValueParameter: out << "TemplateValueParameter"; return out;
+    case DwarfTag::ThrownType: out << "ThrownType"; return out;
+    case DwarfTag::TryBlock: out << "TryBlock"; return out;
+    case DwarfTag::VariantPart: out << "VariantPart"; return out;
+    case DwarfTag::Variable: out << "Variable"; return out;
+    case DwarfTag::VolatileType: out << "VolatileType"; return out;
+    case DwarfTag::DwarfProcedure: out << "DwarfProcedure"; return out;
+    case DwarfTag::RestrictType: out << "RestrictType"; return out;
+    case DwarfTag::InterfaceType: out << "InterfaceType"; return out;
+    case DwarfTag::Namespace: out << "Namespace"; return out;
+    case DwarfTag::ImportedModule: out << "ImportedModule"; return out;
+    case DwarfTag::UnspecifiedType: out << "UnspecifiedType"; return out;
+    case DwarfTag::PartialUnit: out << "PartialUnit"; return out;
+    case DwarfTag::ImportedUnit: out << "ImportedUnit"; return out;
+    case DwarfTag::Condition: out << "Condition"; return out;
+    case DwarfTag::SharedType: out << "SharedType"; return out;
+    case DwarfTag::TypeUnit: out << "TypeUnit"; return out;
+    case DwarfTag::RvalueReferenceType: out << "RvalueReferenceType"; return out;
+    case DwarfTag::TemplateAlias: out << "TemplateAlias"; return out;
+    case DwarfTag::LoUser: out << "LoUser"; return out;
+    case DwarfTag::HiUser: out << "HiUser"; return out;
+    default: out << "Unknown(" << static_cast<uint16_t>(v) << ")"; return out;
+    }
+}
+
+enum class DwarfAttr : uint16_t
+{
     None = 0,
     Sibling = 1,
     Location = 2,
@@ -196,11 +270,174 @@ enum class DwarfAttr : uint16_t {
     ConstExpr = 108,
     EnumClass = 109,
     LinkageName = 110,
+    StringLengthBitSize = 111,
+    StringLengthByteSize = 112,
+    Rank = 113,
+    StrOffsetsBase = 114,
+    AddrBase = 115,
+    RnglistsBase = 116,
+    DwoName = 118,
+    Reference = 119,
+    RvalueReference = 120,
+    Macros = 121,
+    CallAllCalls = 122,
+    CallAllSourceCalls = 123,
+    CallAllTailCalls = 124,
+    CallReturnPc = 125,
+    CallValue = 126,
+    CallOrigin = 127,
+    CallParameter = 128,
+    CallPc = 129,
+    CallTailCall = 130,
+    CallTarget = 131,
+    CallTargetClobbered = 132,
+    CallDataLocation = 133,
+    CallDataValue = 134,
+    Noreturn = 135,
+    Alignment = 136,
+    ExportSymbols = 137,
+    Deleted = 138,
+    Defaulted = 139,
+    LoclistsBase = 140,
     LoUser = 8192,
     HiUser = 16383,
 };
 
-enum class DwarfForm : uint16_t {
+inline
+std::ostream& operator<<(std::ostream &out, DwarfAttr v)
+{
+    switch (v)
+    {
+    case DwarfAttr::None: out << "None"; return out;
+    case DwarfAttr::Sibling: out << "Sibling"; return out;
+    case DwarfAttr::Location: out << "Location"; return out;
+    case DwarfAttr::Name: out << "Name"; return out;
+    case DwarfAttr::Ordering: out << "Ordering"; return out;
+    case DwarfAttr::ByteSize: out << "ByteSize"; return out;
+    case DwarfAttr::BitOffset: out << "BitOffset"; return out;
+    case DwarfAttr::BitSize: out << "BitSize"; return out;
+    case DwarfAttr::StmtList: out << "StmtList"; return out;
+    case DwarfAttr::LowPc: out << "LowPc"; return out;
+    case DwarfAttr::HighPc: out << "HighPc"; return out;
+    case DwarfAttr::Language: out << "Language"; return out;
+    case DwarfAttr::Discr: out << "Discr"; return out;
+    case DwarfAttr::DiscrValue: out << "DiscrValue"; return out;
+    case DwarfAttr::Visibility: out << "Visibility"; return out;
+    case DwarfAttr::Import: out << "Import"; return out;
+    case DwarfAttr::StringLength: out << "StringLength"; return out;
+    case DwarfAttr::CommonReference: out << "CommonReference"; return out;
+    case DwarfAttr::CompDir: out << "CompDir"; return out;
+    case DwarfAttr::ConstValue: out << "ConstValue"; return out;
+    case DwarfAttr::ContainingType: out << "ContainingType"; return out;
+    case DwarfAttr::DefaultValue: out << "DefaultValue"; return out;
+    case DwarfAttr::Inline: out << "Inline"; return out;
+    case DwarfAttr::IsOptional: out << "IsOptional"; return out;
+    case DwarfAttr::LowerBound: out << "LowerBound"; return out;
+    case DwarfAttr::Producer: out << "Producer"; return out;
+    case DwarfAttr::Prototyped: out << "Prototyped"; return out;
+    case DwarfAttr::ReturnAddr: out << "ReturnAddr"; return out;
+    case DwarfAttr::StartScope: out << "StartScope"; return out;
+    case DwarfAttr::BitStride: out << "BitStride"; return out;
+    case DwarfAttr::UpperBound: out << "UpperBound"; return out;
+    case DwarfAttr::AbstractOrigin: out << "AbstractOrigin"; return out;
+    case DwarfAttr::Accessibility: out << "Accessibility"; return out;
+    case DwarfAttr::AddressClass: out << "AddressClass"; return out;
+    case DwarfAttr::Artificial: out << "Artificial"; return out;
+    case DwarfAttr::BaseTypes: out << "BaseTypes"; return out;
+    case DwarfAttr::CallingConvention: out << "CallingConvention"; return out;
+    case DwarfAttr::Count: out << "Count"; return out;
+    case DwarfAttr::DataMemberLocation: out << "DataMemberLocation"; return out;
+    case DwarfAttr::DeclColumn: out << "DeclColumn"; return out;
+    case DwarfAttr::DeclFile: out << "DeclFile"; return out;
+    case DwarfAttr::DeclLine: out << "DeclLine"; return out;
+    case DwarfAttr::Declaration: out << "Declaration"; return out;
+    case DwarfAttr::DiscrList: out << "DiscrList"; return out;
+    case DwarfAttr::Encoding: out << "Encoding"; return out;
+    case DwarfAttr::External: out << "External"; return out;
+    case DwarfAttr::FrameBase: out << "FrameBase"; return out;
+    case DwarfAttr::Friend: out << "Friend"; return out;
+    case DwarfAttr::IdentifierCase: out << "IdentifierCase"; return out;
+    case DwarfAttr::MacroInfo: out << "MacroInfo"; return out;
+    case DwarfAttr::NamelistItem: out << "NamelistItem"; return out;
+    case DwarfAttr::Priority: out << "Priority"; return out;
+    case DwarfAttr::Segment: out << "Segment"; return out;
+    case DwarfAttr::Specification: out << "Specification"; return out;
+    case DwarfAttr::StaticLink: out << "StaticLink"; return out;
+    case DwarfAttr::Type: out << "Type"; return out;
+    case DwarfAttr::UseLocation: out << "UseLocation"; return out;
+    case DwarfAttr::VariableParameter: out << "VariableParameter"; return out;
+    case DwarfAttr::Virtuality: out << "Virtuality"; return out;
+    case DwarfAttr::VtableElemLocation: out << "VtableElemLocation"; return out;
+    case DwarfAttr::Allocated: out << "Allocated"; return out;
+    case DwarfAttr::Associated: out << "Associated"; return out;
+    case DwarfAttr::DataLocation: out << "DataLocation"; return out;
+    case DwarfAttr::ByteStride: out << "ByteStride"; return out;
+    case DwarfAttr::EntryPc: out << "EntryPc"; return out;
+    case DwarfAttr::Use_UTF8: out << "Use_UTF8"; return out;
+    case DwarfAttr::Extension: out << "Extension"; return out;
+    case DwarfAttr::Ranges: out << "Ranges"; return out;
+    case DwarfAttr::Trampoline: out << "Trampoline"; return out;
+    case DwarfAttr::CallColumn: out << "CallColumn"; return out;
+    case DwarfAttr::CallFile: out << "CallFile"; return out;
+    case DwarfAttr::CallLine: out << "CallLine"; return out;
+    case DwarfAttr::Description: out << "Description"; return out;
+    case DwarfAttr::BinaryScale: out << "BinaryScale"; return out;
+    case DwarfAttr::DecimalScale: out << "DecimalScale"; return out;
+    case DwarfAttr::Small: out << "Small"; return out;
+    case DwarfAttr::DecimalSign: out << "DecimalSign"; return out;
+    case DwarfAttr::DigitCount: out << "DigitCount"; return out;
+    case DwarfAttr::PictureString: out << "PictureString"; return out;
+    case DwarfAttr::Mutable: out << "Mutable"; return out;
+    case DwarfAttr::ThreadsScaled: out << "ThreadsScaled"; return out;
+    case DwarfAttr::Explicit: out << "Explicit"; return out;
+    case DwarfAttr::ObjectPointer: out << "ObjectPointer"; return out;
+    case DwarfAttr::Endianity: out << "Endianity"; return out;
+    case DwarfAttr::Elemental: out << "Elemental"; return out;
+    case DwarfAttr::Pure: out << "Pure"; return out;
+    case DwarfAttr::Recursive: out << "Recursive"; return out;
+    case DwarfAttr::Signature: out << "Signature"; return out;
+    case DwarfAttr::MainSubprogram: out << "MainSubprogram"; return out;
+    case DwarfAttr::DataBitOffset: out << "DataBitOffset"; return out;
+    case DwarfAttr::ConstExpr: out << "ConstExpr"; return out;
+    case DwarfAttr::EnumClass: out << "EnumClass"; return out;
+    case DwarfAttr::LinkageName: out << "LinkageName"; return out;
+    case DwarfAttr::StringLengthBitSize: out << "StringLengthBitSize"; return out;
+    case DwarfAttr::StringLengthByteSize: out << "StringLengthByteSize"; return out;
+    case DwarfAttr::Rank: out << "Rank"; return out;
+    case DwarfAttr::StrOffsetsBase: out << "StrOffsetsBase"; return out;
+    case DwarfAttr::AddrBase: out << "AddrBase"; return out;
+    case DwarfAttr::RnglistsBase: out << "RnglistsBase"; return out;
+    case DwarfAttr::DwoName: out << "DwoName"; return out;
+    case DwarfAttr::Reference: out << "Reference"; return out;
+    case DwarfAttr::RvalueReference: out << "RvalueReference"; return out;
+    case DwarfAttr::Macros: out << "Macros"; return out;
+    case DwarfAttr::CallAllCalls: out << "CallAllCalls"; return out;
+    case DwarfAttr::CallAllSourceCalls: out << "CallAllSourceCalls"; return out;
+    case DwarfAttr::CallAllTailCalls: out << "CallAllTailCalls"; return out;
+    case DwarfAttr::CallReturnPc: out << "CallReturnPc"; return out;
+    case DwarfAttr::CallValue: out << "CallValue"; return out;
+    case DwarfAttr::CallOrigin: out << "CallOrigin"; return out;
+    case DwarfAttr::CallParameter: out << "CallParameter"; return out;
+    case DwarfAttr::CallPc: out << "CallPc"; return out;
+    case DwarfAttr::CallTailCall: out << "CallTailCall"; return out;
+    case DwarfAttr::CallTarget: out << "CallTarget"; return out;
+    case DwarfAttr::CallTargetClobbered: out << "CallTargetClobbered"; return out;
+    case DwarfAttr::CallDataLocation: out << "CallDataLocation"; return out;
+    case DwarfAttr::CallDataValue: out << "CallDataValue"; return out;
+    case DwarfAttr::Noreturn: out << "Noreturn"; return out;
+    case DwarfAttr::Alignment: out << "Alignment"; return out;
+    case DwarfAttr::ExportSymbols: out << "ExportSymbols"; return out;
+    case DwarfAttr::Deleted: out << "Deleted"; return out;
+    case DwarfAttr::Defaulted: out << "Defaulted"; return out;
+    case DwarfAttr::LoclistsBase: out << "LoclistsBase"; return out;
+    case DwarfAttr::LoUser: out << "LoUser"; return out;
+    case DwarfAttr::HiUser: out << "HiUser"; return out;
+    default: out << "Unknown(" << static_cast<uint16_t>(v) << ")"; return out;
+    }
+}
+
+enum class DwarfForm : uint16_t
+{
     None = 0,
     Addr = 1,
     Block2 = 3,
@@ -246,6 +483,60 @@ enum class DwarfForm : uint16_t {
     Addrx3 = 43,
     Addrx4 = 44,
 };
+
+inline
+std::ostream& operator<<(std::ostream &out, DwarfForm v)
+{
+    switch (v)
+    {
+    case DwarfForm::None: out << "None"; return out;
+    case DwarfForm::Addr: out << "Addr"; return out;
+    case DwarfForm::Block2: out << "Block2"; return out;
+    case DwarfForm::Block4: out << "Block4"; return out;
+    case DwarfForm::Data2: out << "Data2"; return out;
+    case DwarfForm::Data4: out << "Data4"; return out;
+    case DwarfForm::Data8: out << "Data8"; return out;
+    case DwarfForm::String: out << "String"; return out;
+    case DwarfForm::Block: out << "Block"; return out;
+    case DwarfForm::Block1: out << "Block1"; return out;
+    case DwarfForm::Data1: out << "Data1"; return out;
+    case DwarfForm::Flag: out << "Flag"; return out;
+    case DwarfForm::Sdata: out << "Sdata"; return out;
+    case DwarfForm::Strp: out << "Strp"; return out;
+    case DwarfForm::Udata: out << "Udata"; return out;
+    case DwarfForm::RefAddr: out << "RefAddr"; return out;
+    case DwarfForm::Ref1: out << "Ref1"; return out;
+    case DwarfForm::Ref2: out << "Ref2"; return out;
+    case DwarfForm::Ref4: out << "Ref4"; return out;
+    case DwarfForm::Ref8: out << "Ref8"; return out;
+    case DwarfForm::RefUdata: out << "RefUdata"; return out;
+    case DwarfForm::Indirect: out << "Indirect"; return out;
+    case DwarfForm::SecOffset: out << "SecOffset"; return out;
+    case DwarfForm::Exprloc: out << "Exprloc"; return out;
+    case DwarfForm::FlagPresent: out << "FlagPresent"; return out;
+    case DwarfForm::Strx: out << "Strx"; return out;
+    case DwarfForm::Addrx: out << "Addrx"; return out;
+    case DwarfForm::RefSup4: out << "RefSup4"; return out;
+    case DwarfForm::StrpSup: out << "StrpSup"; return out;
+    case DwarfForm::Data16: out << "Data16"; return out;
+    case DwarfForm::LineStrp: out << "LineStrp"; return out;
+    case DwarfForm::RefSig8: out << "RefSig8"; return out;
+    case DwarfForm::ImplicitConst: out << "ImplicitConst"; return out;
+    case DwarfForm::Loclistx: out << "Loclistx"; return out;
+    case DwarfForm::Rnglistx: out << "Rnglistx"; return out;
+    case DwarfForm::RefSup8: out << "RefSup8"; return out;
+    case DwarfForm::Strx1: out << "Strx1"; return out;
+    case DwarfForm::Strx2: out << "Strx2"; return out;
+    case DwarfForm::Strx3: out << "Strx3"; return out;
+    case DwarfForm::Strx4: out << "Strx4"; return out;
+    case DwarfForm::Addrx1: out << "Addrx1"; return out;
+    case DwarfForm::Addrx2: out << "Addrx2"; return out;
+    case DwarfForm::Addrx3: out << "Addrx3"; return out;
+    case DwarfForm::Addrx4: out << "Addrx4"; return out;
+    default: out << "Unknown(" << static_cast<uint16_t>(v) << ")"; return out;
+    }
+}
+
 using Buffer = std::basic_string_view<uint8_t>;
 
 // DWARF processing lib
@@ -320,6 +611,7 @@ struct Reader
     uint64_t leb128s() { return DecodeLEB128Signed(_it, &_it); }
 
     void skip(size_t len) { _it += len; }
+    Buffer buffer(size_t len) { Buffer res(_it, len); _it += len; return res; }
 
     const char* str() { const char *res = (const char*)_it; _it += strlen(res) + 1; return res; }
 
@@ -330,6 +622,7 @@ struct AttrNameAndForm
 {
     DwarfAttr name;
     DwarfForm form;
+    int64_t implicit_const; // TODO rarely used, inefficient to keep inline
 };
 
 struct AbbrevEntry
@@ -351,7 +644,6 @@ struct AbbrevEntry
         return -1;
     }
 };
-static_assert(sizeof(AbbrevEntry) == 6);
 
 struct DwarfCompilationUnit
 {
@@ -384,6 +676,7 @@ struct DwarfCompilationUnit
             while (true) {
                 DwarfAttr attr_name = static_cast<DwarfAttr>(it.leb128());
                 DwarfForm attr_form = static_cast<DwarfForm>(it.leb128());
+                int64_t implicit_const_val = 0;
 
                 if (attr_name == DwarfAttr::None && attr_form == DwarfForm::None) {
                     break;
@@ -391,13 +684,14 @@ struct DwarfCompilationUnit
 
                 if (attr_form == DwarfForm::ImplicitConst)
                 {
-                    it.leb128s(); // Skip implicit cont valu from dwarf5
+                    implicit_const_val = it.leb128s();
                 }
 
                 _abbrev_data_unpacked.resize(_abbrev_data_unpacked.size() + sizeof(AttrNameAndForm));
                 entry = reinterpret_cast<AbbrevEntry*>(_abbrev_data_unpacked.data() + entry_offset);
                 entry->attrs[entry->num_attrs].name = attr_name;
                 entry->attrs[entry->num_attrs].form = attr_form;
+                entry->attrs[entry->num_attrs].implicit_const = implicit_const_val;
                 entry->num_attrs++;
             }
 
@@ -549,7 +843,7 @@ struct RawDwarfData
             }
 
             strcat(buf, debug_link); // TODO unsafe
-            return RawDwarfData::LoadELF(buf); // TODO prevent recursion
+            return RawDwarfData::LoadELF(buf); // TODO this doesn't work when debug_link file is not in the same dir
         }
 
         throw std::runtime_error("No debug info found");
@@ -582,7 +876,8 @@ struct DIEAccessor
     const AbbrevEntry *_abbrev;
     const uint8_t *_nextDieBegin;
     const uint8_t *_rangeEnd;
-    const uint8_t *_attrData[27]; // TODO make this a small_vector
+    const uint8_t *_attrData[26]; // TODO make this a small_vector
+    uint64_t _offset;
 
     void operator++();
 
@@ -622,6 +917,31 @@ struct DIEAccessor
         }
     }
 
+    std::optional<Buffer> getBuffer(DwarfAttr attr)
+    {
+        size_t idx = _abbrev->findAttrIdxByName(attr);
+        if (idx == (size_t)-1)
+        {
+            return std::nullopt;
+        }
+
+        switch (_abbrev->attrs[idx].form)
+        {
+        case DwarfForm::Block1:
+        {
+            uint64_t size = *(const uint8_t*)(_attrData[idx]);
+            return Buffer(_attrData[idx] + 1, size);
+        }
+        case DwarfForm::Exprloc:
+        {
+            Reader it(_attrData[idx]);
+            uint64_t len = it.leb128();
+            return it.buffer(len);
+        }
+        default: return std::nullopt;
+        }
+    }
+
     std::optional<uint64_t> getOffset(DwarfAttr attr)
     {
         size_t idx = _abbrev->findAttrIdxByName(attr);
@@ -632,6 +952,7 @@ struct DIEAccessor
 
         switch (_abbrev->attrs[idx].form)
         {
+        case DwarfForm::SecOffset: return *(const uint32_t*)(_attrData[idx]);
         case DwarfForm::Ref4: return *(const uint32_t*)(_attrData[idx]);
         case DwarfForm::Addr: return *(const uint64_t*)(_attrData[idx]);
         case DwarfForm::Exprloc:
@@ -662,6 +983,7 @@ struct DIEAccessor
         case DwarfForm::Data4: return *(const uint32_t*)(_attrData[idx]);
         case DwarfForm::Data8: return *(const uint64_t*)(_attrData[idx]);
         case DwarfForm::Udata: return Reader::DecodeLEB128Unsigned(_attrData[idx]);
+        case DwarfForm::ImplicitConst: return _abbrev->attrs[idx].implicit_const;
         default: return std::nullopt;
         }
     }
@@ -716,6 +1038,7 @@ struct DebugDataLoader
         const auto &abbrev = cu->get_abbrev(die_abbrev_code);
         if (abbrev.tag == DwarfTag::None) {
             DIEAccessor curDie;
+            curDie._offset = die - rdd.debug_info.data();
             curDie._loader = this;
             curDie._cu = cu;
             curDie._rangeEnd = rdd.debug_info.data() + cu->_offset + cu->_size;
@@ -725,11 +1048,12 @@ struct DebugDataLoader
         }
 
         DIEAccessor curDie;
+        curDie._offset = die - rdd.debug_info.data();
         curDie._loader = this;
         curDie._cu = cu;
         curDie._rangeEnd = rdd.debug_info.data() + cu->_offset + cu->_size;
         curDie._abbrev = &abbrev;
-        if (abbrev.num_attrs > 27) throw std::runtime_error("TODO larger than small_vector size");
+        if (abbrev.num_attrs > 26) throw std::runtime_error("TODO larger than small_vector size");
 
         auto skipLEB128 = [](const uint8_t *it) -> const uint8_t* {
             while (true) {
@@ -889,56 +1213,47 @@ inline RawDwarfData& DIEAccessor::getRawDwarfData()
     return _loader->rdd;
 }
 
-struct EnumClassPayload;
 
-template <typename UnderlyingT>
-struct EnumClassPayloadWith
+using StringifyFunc = void(*)(std::ostream &out, void *type_info, const void *obj);
+struct StringifyFuncAndTypeInfo
 {
-    void (**stringify_fn_ptr)(const EnumClassPayload *, std::ostream &, const void *);
-    void (*no_debugdata_fn)(const EnumClassPayload *, std::ostream &, const void *);
-    const char *enum_name;
-    std::unordered_map<UnderlyingT, const char*> valueToNameMap;
+    StringifyFunc func;
+    void *type_info;
 };
 
-constexpr size_t MaxEnumClassPayloadSize = std::max(std::initializer_list<size_t>{
-    sizeof(EnumClassPayloadWith<int8_t>),
-    sizeof(EnumClassPayloadWith<uint8_t>),
-    sizeof(EnumClassPayloadWith<int16_t>),
-    sizeof(EnumClassPayloadWith<uint16_t>),
-    sizeof(EnumClassPayloadWith<int32_t>),
-    sizeof(EnumClassPayloadWith<uint32_t>),
-    sizeof(EnumClassPayloadWith<int64_t>),
-    sizeof(EnumClassPayloadWith<uint64_t>)
-});
-
-struct EnumClassPayload
-{
-    void (**stringify_fn_ptr)(const EnumClassPayload *, std::ostream &, const void *);
-    void (*no_debugdata_fn)(const EnumClassPayload *, std::ostream &, const void *);
-
-    union {
-        max_align_t align;
-        char buf[MaxEnumClassPayloadSize - 16];
-    };
-};
-static_assert(sizeof(EnumClassPayload) == MaxEnumClassPayloadSize);
-
-
-struct DwarfStringify
+struct DwarfStringify2
 {
     template <typename UnderlyingT>
-    static void EnumClass(const EnumClassPayload *payload_, std::ostream &out, const void *val_)
+    struct EnumClassTypeInfo
     {
-        const EnumClassPayloadWith<UnderlyingT> *payload = reinterpret_cast<const EnumClassPayloadWith<UnderlyingT>*>(payload_);
+        const char *enum_name;
+        std::unordered_map<UnderlyingT, const char*> valueToNameMap;
+    };
+
+    struct StructTypeInfo
+    {
+        struct MemberInfo
+        {
+            const char *name;
+            size_t offset;
+            StringifyFuncAndTypeInfo stringifier;
+        };
+        std::vector<MemberInfo> members;
+    };
+
+    template <typename UnderlyingT>
+    static void EnumClass(std::ostream &out, void *type_info_, const void *val_)
+    {
+        const EnumClassTypeInfo<UnderlyingT> *type_info = reinterpret_cast<const EnumClassTypeInfo<UnderlyingT>*>(type_info_);
 
         UnderlyingT val = *(const UnderlyingT*)val_;
 
         constexpr bool IsSigned = std::is_signed_v<UnderlyingT>;
 
-        auto it = payload->valueToNameMap.find(static_cast<UnderlyingT>(val));
-        if (it != payload->valueToNameMap.end())
+        auto it = type_info->valueToNameMap.find(static_cast<UnderlyingT>(val));
+        if (it != type_info->valueToNameMap.end())
         {
-            out << payload->enum_name << "::" << it->second;
+            out << type_info->enum_name << "::" << it->second;
             return;
         }
 
@@ -946,193 +1261,354 @@ struct DwarfStringify
         {
             if (val == (-9223372036854775807-1))
             {
-                out << "static_cast<" << payload->enum_name << ">(-9223372036854775807-1)";
+                out << "static_cast<" << type_info->enum_name << ">(-9223372036854775807-1)";
             }
             else
             {
-                out << "static_cast<" << payload->enum_name << ">(" << (int64_t)val << ")";
+                out << "static_cast<" << type_info->enum_name << ">(" << (int64_t)val << ")";
             }
         }
         else
         {
             if (val > 9223372036854775807)
             {
-                out << "static_cast<" << payload->enum_name << ">(" << (uint64_t)val << "ull)";
+                out << "static_cast<" << type_info->enum_name << ">(" << (uint64_t)val << "ull)";
             }
             else
             {
-                out << "static_cast<" << payload->enum_name << ">(" << (uint64_t)val << ")";
+                out << "static_cast<" << type_info->enum_name << ">(" << (uint64_t)val << ")";
             }
         }
     }
+
+    static void Struct(std::ostream &out, void *type_info_, const void *val_)
+    {
+        const StructTypeInfo *type_info = reinterpret_cast<const StructTypeInfo*>(type_info_);
+
+        (void)val_;
+        out << "{";
+        bool need_comma = false;
+        for (const auto &m : type_info->members)
+        {
+            if (need_comma) out << ", ";
+            out << "." << m.name << "=";
+
+            m.stringifier.func(out, m.stringifier.type_info, (const void*)((const char *)val_ + m.offset));
+
+            need_comma = true;
+        }
+        out << "}";
+    }
+};
+
+// Manages mapping of dwarf type refs to their relevant stringify functions and data
+struct LibReprGlobalCache
+{
+    using DwarfLocation = std::pair<uint32_t, uint32_t>; // cu_idx, cu_die_offset
+
+    std::map<DwarfLocation, StringifyFuncAndTypeInfo> stringifiers;
 
     template <typename UnderlyingT>
-    static void EnumClassNoDebugData(const EnumClassPayload *, std::ostream &out, const void *val_)
+    StringifyFuncAndTypeInfo loadEnumStringify(DIEAccessor die)
     {
-        UnderlyingT val = *(const UnderlyingT*)val_;
-
         constexpr bool IsSigned = std::is_signed_v<UnderlyingT>;
 
-        if constexpr (IsSigned)
+        auto type_info = std::make_unique<DwarfStringify2::EnumClassTypeInfo<UnderlyingT>>();
+
+        type_info->enum_name = die.getCStringView(DwarfAttr::Name).value().data();
+        if (die.has_children())
         {
-            out << static_cast<int64_t>(val);
+            ++die;
+            for (; die.tag() != DwarfTag::None; ++die)
+            {
+                if (die.tag() != DwarfTag::Enumerator) throw std::runtime_error("Invalid dwarf");
+
+                UnderlyingT value;
+                if constexpr (IsSigned)
+                {
+                    value = die.getSigned(DwarfAttr::ConstValue).value();
+                }
+                else
+                {
+                    value = die.getUnsigned(DwarfAttr::ConstValue).value();
+                }
+
+                type_info->valueToNameMap[value] = die.getCStringView(DwarfAttr::Name).value().data();
+            }
         }
-        else
+
+        StringifyFuncAndTypeInfo res;
+        res.func = DwarfStringify2::EnumClass<UnderlyingT>;
+        res.type_info = static_cast<void*>(type_info.release());
+        return res;
+    }
+
+    void loadStructStringifyAppendMembers(DwarfStringify2::StructTypeInfo &type_info, DebugDataLoader &loader, size_t cu_idx, DIEAccessor die, size_t offset_base)
+    {
+        int depth = 0;
+        if (die.has_children())
         {
-            out << static_cast<uint64_t>(val);
+            ++depth;
+            ++die;
+            for (; ; ++die)
+            {
+                if (depth == 1 && die.tag() == DwarfTag::Inheritance)
+                {
+                    DIEAccessor baseClassDie = loader.loadCompilationUnitDie(cu_idx, die.getOffset(DwarfAttr::Type).value());
+                    loadStructStringifyAppendMembers(type_info, loader, cu_idx, baseClassDie, offset_base + die.getUnsigned(DwarfAttr::DataMemberLocation).value());
+                }
+                else if (depth == 1 && die.tag() == DwarfTag::Member)
+                {
+                    auto &member = type_info.members.emplace_back();
+                    member.name = die.getCStringView(DwarfAttr::Name)->data();
+                    member.offset = offset_base + die.getUnsigned(DwarfAttr::DataMemberLocation).value();
+                    member.stringifier = loadStringify(loader, cu_idx, die.getOffset(DwarfAttr::Type).value());
+                }
+
+                if (die.has_children())
+                {
+                    ++depth;
+                }
+                else if (die.tag() == DwarfTag::None)
+                {
+                    --depth;
+                    if (depth == 0)
+                    {
+                        break;
+                    }
+                }
+            }
         }
     }
-};
 
-struct TypeRef
-{
-    uint64_t cu_idx;
-    uint64_t offset;
-};
-
-template <typename UnderlyingT>
-inline void ExtractEnumClassTypeInfo(EnumClassPayloadWith<UnderlyingT> *payload, DIEAccessor &die)
-{
-    *payload->stringify_fn_ptr = DwarfStringify::EnumClass<UnderlyingT>;
-    new (&payload->valueToNameMap) std::unordered_map<UnderlyingT, const char*>;
-
-    constexpr bool IsSigned = std::is_signed_v<UnderlyingT>;
-
-    payload->enum_name = die.getCStringView(DwarfAttr::Name).value().data();
-
-    if (die.has_children())
+    StringifyFuncAndTypeInfo loadStructStringify(DebugDataLoader &loader, size_t cu_idx, DIEAccessor die)
     {
-        ++die;
-        for (; die.tag() != DwarfTag::None; ++die)
+        auto type_info = std::make_unique<DwarfStringify2::StructTypeInfo>();
+        loadStructStringifyAppendMembers(*type_info, loader, cu_idx, die, 0);
+
+        StringifyFuncAndTypeInfo res;
+        res.func = DwarfStringify2::Struct;
+        res.type_info = static_cast<void*>(type_info.release());
+        return res;
+    }
+
+    StringifyFuncAndTypeInfo loadBaseStringify(DIEAccessor die)
+    {
+        StringifyFuncAndTypeInfo res = {};
+
+        uint64_t encoding = die.getUnsigned(DwarfAttr::Encoding).value();
+        uint64_t byteSize = die.getUnsigned(DwarfAttr::ByteSize).value();
+
+        switch (encoding)
         {
-            if (die.tag() != DwarfTag::Enumerator) throw std::runtime_error("Invalid dwarf");
+        case 4: // float
+            if (byteSize == 4)  { res.func = [](std::ostream &out, void *, const void *val) { out << *(const float*)val;       }; return res; }
+            if (byteSize == 8)  { res.func = [](std::ostream &out, void *, const void *val) { out << *(const double*)val;      }; return res; }
+            if (byteSize == 16) { res.func = [](std::ostream &out, void *, const void *val) { out << *(const long double*)val; }; return res; }
+            break;
+        case 5: // signed
+        case 6: // signed char
+            if (byteSize == 1)  { res.func = [](std::ostream &out, void *, const void *val) { out << static_cast<int32_t>(*(const int8_t*)val); }; return res; }
+            if (byteSize == 2)  { res.func = [](std::ostream &out, void *, const void *val) { out << *(const int16_t*)val;      }; return res; }
+            if (byteSize == 4)  { res.func = [](std::ostream &out, void *, const void *val) { out << *(const int32_t*)val;      }; return res; }
+            if (byteSize == 8)  { res.func = [](std::ostream &out, void *, const void *val) { out << *(const int64_t*)val;      }; return res; }
+            break;
+        case 7: // unsigned
+        case 8: // unsigned char
+            if (byteSize == 1)  { res.func = [](std::ostream &out, void *, const void *val) { out << static_cast<uint32_t>(*(const uint8_t*)val); }; return res; }
+            if (byteSize == 2)  { res.func = [](std::ostream &out, void *, const void *val) { out << *(const uint16_t*)val;      }; return res; }
+            if (byteSize == 4)  { res.func = [](std::ostream &out, void *, const void *val) { out << *(const uint32_t*)val;      }; return res; }
+            if (byteSize == 8)  { res.func = [](std::ostream &out, void *, const void *val) { out << *(const uint64_t*)val;      }; return res; }
+            break;
+        case 16: // DW_ATE_UTF
+            if (byteSize == 1)  { res.func = [](std::ostream &out, void *, const void *val) { out << static_cast<uint32_t>(*(const uint8_t*)val); }; return res; }
+            if (byteSize == 2)  { res.func = [](std::ostream &out, void *, const void *val) { out << *(const uint16_t*)val;      }; return res; }
+            if (byteSize == 4)  { res.func = [](std::ostream &out, void *, const void *val) { out << *(const uint32_t*)val;      }; return res; }
+            break;
+        }
 
-            UnderlyingT value;
-            if constexpr (IsSigned)
-            {
-                value = die.getSigned(DwarfAttr::ConstValue).value();
-            }
-            else
-            {
-                value = die.getUnsigned(DwarfAttr::ConstValue).value();
-            }
+        std::cerr << "encoding=" << encoding << ", byteSize=" << byteSize << " type=" << die.getCStringView(DwarfAttr::Name).value() << "\n";
 
-            payload->valueToNameMap[value] = die.getCStringView(DwarfAttr::Name).value().data();
+        res.func = [](std::ostream &out, void *, const void *)
+        {
+            out << "???";
+        };
+        res.type_info = nullptr;
+        return res;
+    }
+
+    StringifyFuncAndTypeInfo loadStringify(DebugDataLoader &loader, size_t cu_idx, uint64_t typeDieOffset)
+    {
+        DwarfLocation loc(cu_idx, typeDieOffset);
+        if (auto it = stringifiers.find(loc); it != stringifiers.end()) {
+            return it->second;
+        }
+
+        DIEAccessor acc = loader.loadCompilationUnitDie(cu_idx, typeDieOffset);
+        std::optional<StringifyFuncAndTypeInfo> res;
+        switch (acc.tag())
+        {
+        case DwarfTag::EnumerationType:
+        {
+            // GCC has encoding/byteSize in enum type, but clang only has them on linked primitive
+            DIEAccessor primitiveDie = loader.loadCompilationUnitDie(cu_idx, acc.getOffset(DwarfAttr::Type).value());
+            uint64_t encoding = primitiveDie.getUnsigned(DwarfAttr::Encoding).value();
+            uint64_t byteSize = primitiveDie.getUnsigned(DwarfAttr::ByteSize).value();
+
+            // GCC uses encoding=5,7, clang uses 6,8
+            bool signed_ = (encoding == 5 || encoding == 6);
+            bool unsigned_ = (encoding == 7 || encoding == 8);
+            if (signed_   && byteSize == 1) { res = loadEnumStringify<int8_t  >(acc); break; }
+            if (signed_   && byteSize == 2) { res = loadEnumStringify<int16_t >(acc); break; }
+            if (signed_   && byteSize == 4) { res = loadEnumStringify<int32_t >(acc); break; }
+            if (signed_   && byteSize == 8) { res = loadEnumStringify<int64_t >(acc); break; }
+            if (unsigned_ && byteSize == 1) { res = loadEnumStringify<uint8_t >(acc); break; }
+            if (unsigned_ && byteSize == 2) { res = loadEnumStringify<uint16_t>(acc); break; }
+            if (unsigned_ && byteSize == 4) { res = loadEnumStringify<uint32_t>(acc); break; }
+            if (unsigned_ && byteSize == 8) { res = loadEnumStringify<uint64_t>(acc); break; }
+            break;
+        }
+        case DwarfTag::StructureType:
+        case DwarfTag::ClassType:
+        {
+            res = loadStructStringify(loader, cu_idx, acc);
+            break;
+        }
+        case DwarfTag::BaseType:
+        {
+            res = loadBaseStringify(acc);
+            break;
+        }
+        case DwarfTag::Typedef:
+        {
+            res = loadStringify(loader, cu_idx, acc.getOffset(DwarfAttr::Type).value());
+            break;
+        }
+        case DwarfTag::PointerType:
+        {
+            // TODO function ptrs?
+            // TODO maybe make char* etc to print the string etc
+            res.emplace();
+            res->func = [](std::ostream &out, void *, const void *val)
+            {
+                uint64_t addr = *(const uint64_t*)val;
+                if (addr == 0)
+                {
+                    out << "nullptr";
+                }
+                else
+                {
+                    std::stringstream ss;
+                    ss << "0x" << std::hex << std::setw(16) << std::setfill('0') << addr;
+                    out << ss.str();
+                }
+            };
+            res->type_info = nullptr;
+            break;
+        }
+        default:
+            break;
+        }
+
+        if (!res) {
+            std::cerr << "Can't stringify type at 0x" << std::hex << typeDieOffset << std::dec << " " << acc.tag() << "\n";
+            res.emplace();
+            res->func = [](std::ostream &out, void *, const void *)
+            {
+                out << "???";
+            };
+            res->type_info = nullptr;
+        }
+
+        stringifiers[loc] = *res;
+        return *res;
+    }
+
+    void run(DebugDataLoader &loader)
+    {
+        for (size_t i = 0; i < loader.num_compilation_units(); ++i)
+        {
+            std::optional<DIEAccessor> ttypeDie, fnVarDie;
+            auto check = [&]()
+            {
+                if (ttypeDie && fnVarDie)
+                {
+                    uint64_t typeDieOffset = ttypeDie->getOffset(DwarfAttr::Type).value();
+
+                    StringifyFuncAndTypeInfo *fnti = (StringifyFuncAndTypeInfo*)fnVarDie->getOffset(DwarfAttr::Location).value();
+                    *fnti = loadStringify(loader, i, typeDieOffset);
+
+                    ttypeDie.reset();
+                    fnVarDie.reset();
+                }
+            };
+
+            for (DIEAccessor acc = loader.loadCompilationUnitRootDie(i); acc; ++acc)
+            {
+                switch (acc.tag())
+                {
+                case DwarfTag::Subprogram:
+                    ttypeDie.reset();
+                    fnVarDie.reset();
+                    break;
+                case DwarfTag::TemplateTypeParameter:
+                    if (acc.getCStringView(DwarfAttr::Name) == "librepr_T__")
+                    {
+                        ttypeDie = acc;
+                        check();
+                    }
+                    break;
+                case DwarfTag::Variable:
+                {
+                    if (acc.getCStringView(DwarfAttr::Name) == "librepr_stringify_fnti__")
+                    {
+                        fnVarDie = acc;
+                        check();
+                    }
+                    break;
+                }
+                default:
+                    break;
+                }
+            }
         }
     }
-}
 
-struct LibRepr
-{
-    static void Initialize(const EnumClassPayload *payload, std::ostream &out, const void *val)
+    static
+    void InitializeAll(std::ostream &out, void *type_info, const void *obj)
     {
+        StringifyFuncAndTypeInfo *fnti = reinterpret_cast<StringifyFuncAndTypeInfo*>(type_info);
+
         static std::mutex gMut;
         static std::shared_ptr<DebugDataLoader> gLoader;
+        static std::shared_ptr<LibReprGlobalCache> gCache;
 
         std::lock_guard<std::mutex> guard(gMut);
         if (!gLoader)
         {
             gLoader = std::make_shared<DebugDataLoader>();
             gLoader->loadFile("/proc/self/exe");
+            gCache = std::make_shared<LibReprGlobalCache>();
+            gCache->run(*gLoader);
         }
 
-        bool found = false;
-
-        for (size_t i = 0; i < gLoader->num_compilation_units(); ++i)
+        if (fnti->func == InitializeAll)
         {
-            DIEAccessor acc = gLoader->loadCompilationUnitRootDie(i);
-
-            TypeRef lastTypeRef;
-            void (**stringify_fn_ptr)(const EnumClassPayload*, std::ostream &, const void*);
-            EnumClassPayload *payload_ptr;
-
-            auto clear = [&]()
+            // TODO implement fallback printers?
+            fnti->func = [](std::ostream &out, void *, const void *)
             {
-                lastTypeRef.cu_idx = -1;
-                lastTypeRef.offset = -1;
-                stringify_fn_ptr = nullptr;
-                payload_ptr = nullptr;
+                out << "???";
             };
-
-            auto check = [&]()
-            {
-                if (lastTypeRef.cu_idx != (uint64_t)-1 && stringify_fn_ptr && payload_ptr)
-                {
-
-                    // Extract type info and stuff..
-                    {
-                        DIEAccessor die = gLoader->loadCompilationUnitDie(lastTypeRef.cu_idx, lastTypeRef.offset);
-
-                        if (die.tag() != DwarfTag::EnumerationType) throw std::runtime_error("Invalid dwarf");
-                        // TODO check DW_AT_enum_class
-
-                        // GCC has encoding/byteSize in enum type, but clang only has them on linked primitive
-                        DIEAccessor primitiveDie = gLoader->loadCompilationUnitDie(lastTypeRef.cu_idx, die.getOffset(DwarfAttr::Type).value());
-                        uint64_t encoding = primitiveDie.getUnsigned(DwarfAttr::Encoding).value();
-                        uint64_t byteSize = primitiveDie.getUnsigned(DwarfAttr::ByteSize).value();
-
-                        // GCC uses encoding=5,7, clang uses 6,8
-                        bool signed_ = (encoding == 5 || encoding == 6);
-                        bool unsigned_ = (encoding == 7 || encoding == 8);
-                        if (signed_   && byteSize == 1) { ExtractEnumClassTypeInfo((EnumClassPayloadWith<int8_t>*)payload_ptr, die); goto done; }
-                        if (signed_   && byteSize == 2) { ExtractEnumClassTypeInfo((EnumClassPayloadWith<int16_t>*)payload_ptr, die); goto done; }
-                        if (signed_   && byteSize == 4) { ExtractEnumClassTypeInfo((EnumClassPayloadWith<int32_t>*)payload_ptr, die); goto done; }
-                        if (signed_   && byteSize == 8) { ExtractEnumClassTypeInfo((EnumClassPayloadWith<int64_t>*)payload_ptr, die); goto done; }
-                        if (unsigned_ && byteSize == 1) { ExtractEnumClassTypeInfo((EnumClassPayloadWith<uint8_t>*)payload_ptr, die); goto done; }
-                        if (unsigned_ && byteSize == 2) { ExtractEnumClassTypeInfo((EnumClassPayloadWith<uint16_t>*)payload_ptr, die); goto done; }
-                        if (unsigned_ && byteSize == 4) { ExtractEnumClassTypeInfo((EnumClassPayloadWith<uint32_t>*)payload_ptr, die); goto done; }
-                        if (unsigned_ && byteSize == 8) { ExtractEnumClassTypeInfo((EnumClassPayloadWith<uint64_t>*)payload_ptr, die); goto done; }
-
-                        throw std::runtime_error("Not found encoding/byteSize");
-                        done:
-                            ;
-                    }
-
-                    clear();
-                }
-            };
-
-            clear();
-            while (acc) {
-                if (acc.tag() == DwarfTag::TemplateTypeParameter && acc.getCStringView(DwarfAttr::Name) == "librepr_T__")
-                {
-                    lastTypeRef = {i, acc.getOffset(DwarfAttr::Type).value()};
-                    check();
-                }
-                if (acc.tag() == DwarfTag::Variable && acc.getCStringView(DwarfAttr::Name) == "librepr_stringify_fn__")
-                {
-                    uint64_t loc = acc.getOffset(DwarfAttr::Location).value();
-                    stringify_fn_ptr = (void (**)(const EnumClassPayload*, std::ostream &, const void*))loc;
-                    check();
-                }
-                if (acc.tag() == DwarfTag::Variable && acc.getCStringView(DwarfAttr::Name) == "librepr_stringify_fn_payload__")
-                {
-                    uint64_t loc = acc.getOffset(DwarfAttr::Location).value();
-                    payload_ptr = (EnumClassPayload*)loc;
-                    if (payload_ptr == payload)
-                    {
-                        found = true;
-                    }
-                    check();
-                }
-
-                ++acc;
-            }
+            fnti->type_info = nullptr;
         }
 
-        if (!found)
-        {
-            // No debug data..
-            (*payload->stringify_fn_ptr) = payload->no_debugdata_fn;
-        }
-
-        // Recall repr after initialization
-        (*payload->stringify_fn_ptr)(payload, out, val);
+        fnti->func(out, fnti->type_info, obj);
     }
 };
 
 
-} // namespace librepr::_internal_v1
+
+} // namespace librepr::_internal_v2
 
 
 
@@ -1140,20 +1616,20 @@ struct LibRepr
 namespace librepr {
 
 
+
 template <typename librepr_T__>
-inline std::string repr(const librepr_T__ &val)
+inline
+std::string repr(const librepr_T__ &val)
 {
-    using namespace _internal_v1;
+    using namespace _internal_v2;
 
-    static void (*librepr_stringify_fn__)(const EnumClassPayload *, std::ostream &, const void *) = LibRepr::Initialize;
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-    static EnumClassPayload librepr_stringify_fn_payload__ = { &librepr_stringify_fn__, DwarfStringify::EnumClassNoDebugData<std::underlying_type_t<librepr_T__>> };
-#pragma GCC diagnostic pop
+    static StringifyFuncAndTypeInfo librepr_stringify_fnti__ = {
+        LibReprGlobalCache::InitializeAll,
+        reinterpret_cast<void*>(&librepr_stringify_fnti__)
+    };
 
     std::stringstream ss;
-    librepr_stringify_fn__(&librepr_stringify_fn_payload__, ss, (const void*)&val);
+    librepr_stringify_fnti__.func(ss, librepr_stringify_fnti__.type_info, reinterpret_cast<const void*>(&val));
     return ss.str();
 }
 
