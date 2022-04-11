@@ -1,3 +1,10 @@
+2022-04-11 v0.3
+
+- Fix loading ET_DYN executables
+- Handle dwarf line_strp form
+- Handle resolving typedefs on enums
+- Handle executables position independent code
+
 2021-08-29 v0.2
 
 - Ability to print structs

@@ -33,7 +33,7 @@
 #include <optional>
 
 
-namespace librepr::_internal_v2 {
+namespace librepr::_internal_v3 {
 
 
 enum class DwarfTag : uint16_t
@@ -774,7 +774,7 @@ struct RawDwarfData
             throw std::runtime_error("Not little endian");
         }
 
-        if (elf->e_type != ET_EXEC)
+        if (elf->e_type != ET_EXEC && elf->e_type != ET_DYN)
         {
             throw std::runtime_error("Not an executable file");
         }
@@ -983,6 +983,7 @@ struct DIEAccessor
         case DwarfForm::Data4: return *(const uint32_t*)(_attrData[idx]);
         case DwarfForm::Data8: return *(const uint64_t*)(_attrData[idx]);
         case DwarfForm::Udata: return Reader::DecodeLEB128Unsigned(_attrData[idx]);
+        case DwarfForm::Sdata: return Reader::DecodeLEB128Signed(_attrData[idx]);
         case DwarfForm::ImplicitConst: return _abbrev->attrs[idx].implicit_const;
         default: return std::nullopt;
         }
@@ -1071,6 +1072,7 @@ struct DebugDataLoader
             {
             case DwarfForm::FlagPresent:                                 break; // maybe use bool?
             case DwarfForm::Strp:          it._it += 4;                  break;
+            case DwarfForm::LineStrp:      it._it += 4;                  break;
             case DwarfForm::Data1:         it._it += 1;                  break;
             case DwarfForm::Data2:         it._it += 2;                  break;
             case DwarfForm::Data4:         it._it += 4;                  break;
@@ -1452,6 +1454,13 @@ struct LibReprGlobalCache
         {
             // GCC has encoding/byteSize in enum type, but clang only has them on linked primitive
             DIEAccessor primitiveDie = loader.loadCompilationUnitDie(cu_idx, acc.getOffset(DwarfAttr::Type).value());
+
+            // TODO extract this typedef following logic to a function
+            while (primitiveDie.tag() == DwarfTag::Typedef)
+            {
+                primitiveDie = loader.loadCompilationUnitDie(cu_idx, primitiveDie.getOffset(DwarfAttr::Type).value());
+            }
+
             uint64_t encoding = primitiveDie.getUnsigned(DwarfAttr::Encoding).value();
             uint64_t byteSize = primitiveDie.getUnsigned(DwarfAttr::ByteSize).value();
 
@@ -1524,8 +1533,37 @@ struct LibReprGlobalCache
         return *res;
     }
 
+    uint64_t findGlobalOffset(DebugDataLoader &loader)
+    {
+        // Find a position of a well known global variable and compare it to its debug data
+        // Use that offset for any global variables later, to make this work with PIE.
+        static volatile bool librepr_global_offset_marker__;
+        uint64_t dwarfLocation = -1;
+        uint64_t realLocation = reinterpret_cast<uint64_t>(&librepr_global_offset_marker__);
+
+        for (size_t i = 0; i < loader.num_compilation_units(); ++i)
+        {
+            for (DIEAccessor acc = loader.loadCompilationUnitRootDie(i); acc; ++acc)
+            {
+                if (acc.tag() == DwarfTag::Variable)
+                {
+                    if (acc.getCStringView(DwarfAttr::Name) == "librepr_global_offset_marker__")
+                    {
+                        dwarfLocation = acc.getOffset(DwarfAttr::Location).value();
+                        return realLocation - dwarfLocation;
+                    }
+                }
+            }
+        }
+
+        // TODO fallback, not fail
+        throw std::runtime_error("Unable to find librepr_global_offset_marker__, did you enable debug data?");
+    }
+
     void run(DebugDataLoader &loader)
     {
+        uint64_t globalOffset = findGlobalOffset(loader);
+
         for (size_t i = 0; i < loader.num_compilation_units(); ++i)
         {
             std::optional<DIEAccessor> ttypeDie, fnVarDie;
@@ -1535,7 +1573,8 @@ struct LibReprGlobalCache
                 {
                     uint64_t typeDieOffset = ttypeDie->getOffset(DwarfAttr::Type).value();
 
-                    StringifyFuncAndTypeInfo *fnti = (StringifyFuncAndTypeInfo*)fnVarDie->getOffset(DwarfAttr::Location).value();
+                    uint64_t dwarfOffset = fnVarDie->getOffset(DwarfAttr::Location).value();
+                    StringifyFuncAndTypeInfo *fnti = (StringifyFuncAndTypeInfo*)(globalOffset + dwarfOffset);
                     *fnti = loadStringify(loader, i, typeDieOffset);
 
                     ttypeDie.reset();
@@ -1608,7 +1647,7 @@ struct LibReprGlobalCache
 
 
 
-} // namespace librepr::_internal_v2
+} // namespace librepr::_internal_v3
 
 
 
@@ -1621,7 +1660,7 @@ template <typename librepr_T__>
 inline
 std::string repr(const librepr_T__ &val)
 {
-    using namespace _internal_v2;
+    using namespace _internal_v3;
 
     static StringifyFuncAndTypeInfo librepr_stringify_fnti__ = {
         LibReprGlobalCache::InitializeAll,
